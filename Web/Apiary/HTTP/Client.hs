@@ -153,15 +153,16 @@ proxyTo req = do
                 in loop
 
 -- |Modify response from proxy target then send.
---You should consider to use @resetHeaders@ to avoid proxying bad response.
+-- You should consider remove following headers:
+-- Transfer-Encoding, Content-Length, Content-Encoding and Accept-Encoding.
 proxyWith
     :: (Has HTTPClient exts, MonadIO m)
     => Request
-    -> ([Header] -> [Header])               -- ^ Function to modify response headers
-    -> (LB.ByteString -> LB.ByteString)     -- ^ Function to modify response body.
+    -> (Response LB.ByteString -> Response LB.ByteString) -- ^ Function to modify response.
     -> A.ActionT exts prms m ()
-proxyWith req hm bm = do
+proxyWith req modifier = do
     resLbs <- sendRequset req
-    A.status (responseStatus resLbs)
-    A.setHeaders (hm $ responseHeaders resLbs)
-    A.lazyBytes (bm $ responseBody resLbs)
+    let resLbs' = modifier resLbs
+    A.status (responseStatus resLbs')
+    A.setHeaders (responseHeaders resLbs')
+    A.lazyBytes (responseBody resLbs')
