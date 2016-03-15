@@ -11,10 +11,10 @@ main = runApiaryWith (run serverPort) (HTTP.initHTTPClient HTTP.defaultManagerSe
 
     [capture|/query|] . action $ do
         
-        -- make a new Network.HTTP.Client.Request from Wai.Request
+        -- make a new Network.HTTP.Client.Request from current ActionT's Network.Wai.Request
         -- it's recommended to use resetHeaders to remove following headers:
         -- Transfer-Encoding, Content-Length, Content-Encoding and Accept-Encoding.
-        req <- HTTP.fromRequest (const "api.backend.com") resetHeaders
+        req <- HTTP.fromRequest id resetHeaders
 
         -- set proxying host and port
         -- use function from Network.HTTP.Client to modify more
