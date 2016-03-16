@@ -1,7 +1,7 @@
 Apiary HTTP Client
 ==================
 
-[![Hackage](https://img.shields.io/hackage/v/lens.svg?style=flat-square)](http://hackage.haskell.org/package/apiary-http-client)
+[![Hackage](https://img.shields.io/hackage/v/apiary-http-client.svg?style=flat-square)](http://hackage.haskell.org/package/apiary-http-client)
 
 A HTTP Client for [Apiary](http://hackage.haskell.org/package/apiary), using `Apiary`'s extension api, suitable for proxying HTTP request to backend API, with flexible APIs and streamming proxying abilities.
 
