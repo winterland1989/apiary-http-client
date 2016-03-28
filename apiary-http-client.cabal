@@ -30,7 +30,7 @@ library
                           ,   types-compat                >=0.1   && <0.2
                           ,   http-client                 >=0.4.26
                           ,   http-types                  >=0.8
-                          ,   apiary                      >=1.0.0
+                          ,   apiary                      >=1.4   && <3.0
                           ,   wai
                           ,   data-default-class
                           ,   bytestring
