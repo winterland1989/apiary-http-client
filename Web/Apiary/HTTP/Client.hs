@@ -175,3 +175,11 @@ proxyWith req modifier = do
     A.status (responseStatus resLbs')
     A.setHeaders (responseHeaders resLbs')
     A.lazyBytes (responseBody resLbs')
+
+-- |A catch handler which only deal with 'StatusCodeException'
+--  the status code and headers will be forward to user.
+--  any other exceptions will be re-thrown.
+--  It's intend to use with MonadCatch or MonadBaseControl instance of 'ActionT'
+forwardBadStatus :: (Has HTTPClient exts, MonadIO m)
+    => HttpException -> A.ActionT exts prms m ()
+forwardBadStatus (StatusCodeException s h _) = A.status s >> A.setHeaders h >> A.stop
