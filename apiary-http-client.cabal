@@ -34,6 +34,7 @@ library
                       ,   wai                         >=3.0   && <3.3
                       ,   data-default-class
                       ,   bytestring                  >=0.10  && <0.11
+                      ,   bytestring-builder          >=0.10  && <0.11
                       ,   text                        >=1.1   && <1.3
     -- hs-source-dirs:      
     default-language:    Haskell2010
