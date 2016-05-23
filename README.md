@@ -1,7 +1,8 @@
 Apiary HTTP Client
 ==================
 
-[![Hackage](https://img.shields.io/hackage/v/apiary-http-client.svg?style=flat-square)](http://hackage.haskell.org/package/apiary-http-client)
+[![Hackage](https://img.shields.io/hackage/v/apiary-http-client.svg?style=flat)](http://hackage.haskell.org/package/apiary-http-client)
+[![Travis-CI](https://travis-ci.org/winterland1989/apiary-http-client.svg)](https://travis-ci.org/winterland1989/apiary-http-client)
 
 A HTTP Client for [Apiary](http://hackage.haskell.org/package/apiary), using `Apiary`'s extension api, suitable for proxying HTTP request to backend API, with flexible APIs and streamming proxying abilities.
 
@@ -16,7 +17,7 @@ import Network.Wai.Handler.Warp
 import Web.Apiary.HTTP.Client as HTTP
 
 main :: IO ()
-main = runApiaryWith (run serverPort) (HTTP.initHTTPClient HTTP.defaultManagerSettings) def $ do
+main = runApiaryWith (run 8080) (HTTP.initHTTPClient HTTP.defaultManagerSettings) def $ do
 
     [capture|/query|] . action $ do
         

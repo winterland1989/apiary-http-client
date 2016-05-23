@@ -30,10 +30,14 @@ module Web.Apiary.HTTP.Client
     -- ** Send request and proxy respond
     , proxyTo
     , proxyWith
+    -- http client exception handler
+    , forwardBadStatus
+    , forwardBadStatus'
     , module Network.HTTP.Client
     ) where
 
 import Control.Monad.IO.Class
+import Control.Exception (throwIO)
 import Network.HTTP.Client
 import qualified Network.Wai as W
 import Network.HTTP.Types.Header
@@ -178,18 +182,18 @@ proxyWith req modifier = do
     A.lazyBytes (responseBody resLbs')
 
 -- |A catch handler which only deal with 'StatusCodeException'
---  the status code and headers will be forward to user.
+--  the status code will be proxy to user.
 --  any other exceptions will be re-thrown.
 --  It's intend to use with MonadCatch or MonadBaseControl instance of 'ActionT'
 forwardBadStatus :: (Has HTTPClient exts, MonadIO m)
     => HttpException -> A.ActionT exts prms m ()
-forwardBadStatus (StatusCodeException s h _) = A.status s >> A.setHeaders h >> A.stop
+forwardBadStatus (StatusCodeException s h _) = A.status s >> A.stop
+forwardBadStatus err = liftIO $ throwIO err
 
--- |A catch handler which only deal with 'StatusCodeException'
---  the status code and headers will be forward to user.
+-- |same with 'forwardBadStatus', except that
 --  any other exceptions will be result in a 404 status with exceptions message.
 --  It's intend to use with MonadCatch or MonadBaseControl instance of 'ActionT'
 forwardBadStatus' :: (Has HTTPClient exts, MonadIO m)
     => HttpException -> A.ActionT exts prms m ()
-forwardBadStatus' (StatusCodeException s h _) = A.status s >> A.setHeaders h >> A.stop
+forwardBadStatus' (StatusCodeException s h _) = A.status s >> A.stop
 forwardBadStatus' err = A.status notFound404 >> A.showing err >> A.stop
