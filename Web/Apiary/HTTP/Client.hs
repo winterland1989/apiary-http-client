@@ -37,6 +37,7 @@ import Control.Monad.IO.Class
 import Network.HTTP.Client
 import qualified Network.Wai as W
 import Network.HTTP.Types.Header
+import Network.HTTP.Types.Status (notFound404)
 import Data.Apiary.Extension
 import qualified Data.Proxy.Compat as P (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
@@ -183,3 +184,12 @@ proxyWith req modifier = do
 forwardBadStatus :: (Has HTTPClient exts, MonadIO m)
     => HttpException -> A.ActionT exts prms m ()
 forwardBadStatus (StatusCodeException s h _) = A.status s >> A.setHeaders h >> A.stop
+
+-- |A catch handler which only deal with 'StatusCodeException'
+--  the status code and headers will be forward to user.
+--  any other exceptions will be result in a 404 status with exceptions message.
+--  It's intend to use with MonadCatch or MonadBaseControl instance of 'ActionT'
+forwardBadStatus' :: (Has HTTPClient exts, MonadIO m)
+    => HttpException -> A.ActionT exts prms m ()
+forwardBadStatus' (StatusCodeException s h _) = A.status s >> A.setHeaders h >> A.stop
+forwardBadStatus' err = A.status notFound404 >> A.showing err >> A.stop
