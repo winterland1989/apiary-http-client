@@ -30,7 +30,7 @@ module Web.Apiary.HTTP.Client
     -- ** Send request and proxy respond
     , proxyTo
     , proxyWith
-    -- http client exception handler
+    -- ** http client exception handler
     , forwardBadStatus
     , forwardBadStatus'
     , module Network.HTTP.Client
