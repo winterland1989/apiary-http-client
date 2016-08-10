@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                apiary-http-client
-version:             0.1.2.0
+version:             0.1.3.0
 synopsis:            A http client for Apiary.
 description:         
     A HTTP Client for Apiary, using Apiary's extension api, suitable for proxying HTTP request to backend API, with flexible APIs and streamming proxying abilities.
@@ -28,11 +28,10 @@ library
     build-depends:        base                        >=4.6 && <4.9
                       ,   transformers                >=0.2   && <0.5
                       ,   types-compat                >=0.1   && <0.2
-                      ,   http-client                 >=0.4
+                      ,   http-client                 >=0.5   && <0.6
                       ,   http-types                  >=0.8
                       ,   apiary                      >=1.4   && <3.0
                       ,   wai                         >=3.0   && <3.3
-                      ,   data-default-class
                       ,   bytestring                  >=0.10  && <0.11
                       ,   bytestring-builder          >=0.10  && <0.11
                       ,   text                        >=1.1   && <1.3

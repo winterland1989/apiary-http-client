@@ -45,7 +45,6 @@ import Network.HTTP.Types.Status (notFound404)
 import Data.Apiary.Extension
 import qualified Data.Proxy.Compat as P (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
-import Data.Default.Class
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.ByteString.Builder as B
@@ -89,7 +88,7 @@ fromWaiRequest pm hm req =
             W.ChunkedBody       -> RequestBodyStreamChunked needsPopper
             W.KnownLength len   -> RequestBodyStream (unsafeCoerce len) needsPopper
     in
-        def {
+        defaultRequest {
             queryString = W.rawQueryString req
         ,   path = T.encodeUtf8 (T.intercalate "/" path)
         ,   method = W.requestMethod req
@@ -184,16 +183,16 @@ proxyWith req modifier = do
 -- |A catch handler which only deal with 'StatusCodeException'
 --  the status code will be proxy to user.
 --  any other exceptions will be re-thrown.
---  It's intend to use with MonadCatch or MonadBaseControl instance of 'ActionT'
+--  It's intend to use with MonadCatch or MonadBaseControl instance of 'A.ActionT'
 forwardBadStatus :: (Has HTTPClient exts, MonadIO m)
     => HttpException -> A.ActionT exts prms m ()
-forwardBadStatus (StatusCodeException s h _) = A.status s >> A.stop
+forwardBadStatus (HttpExceptionRequest _ (StatusCodeException s h)) = A.status (responseStatus s) >> A.stop
 forwardBadStatus err = liftIO $ throwIO err
 
 -- |same with 'forwardBadStatus', except that
 --  any other exceptions will be result in a 404 status with exceptions message.
---  It's intend to use with MonadCatch or MonadBaseControl instance of 'ActionT'
+--  It's intend to use with MonadCatch or MonadBaseControl instance of 'A.ActionT'
 forwardBadStatus' :: (Has HTTPClient exts, MonadIO m)
     => HttpException -> A.ActionT exts prms m ()
-forwardBadStatus' (StatusCodeException s h _) = A.status s >> A.stop
+forwardBadStatus' (HttpExceptionRequest _ (StatusCodeException s h)) = A.status (responseStatus s) >> A.stop
 forwardBadStatus' err = A.status notFound404 >> A.showing err >> A.stop
