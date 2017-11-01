@@ -56,10 +56,10 @@ newtype HTTPClient = HTTPClient Manager
 
 instance Extension HTTPClient
 
--- |Initialize a 'MonadExts' with 'ManagerSettings'.
+-- |Initialize a 'MonadExts' with 'Manager'.
 initHTTPClient :: MonadIO m
-               => ManagerSettings -> Initializer m exts (HTTPClient ': exts)
-initHTTPClient ms = initializer' . liftIO $ newManager ms >>= return . HTTPClient
+               => Manager -> Initializer m exts (HTTPClient ': exts)
+initHTTPClient manager = initializer' . liftIO $ manager >>= return . HTTPClient
 
 -- |Get 'Manager' from Apiary's 'MonadExts' context.
 getManager :: (Has HTTPClient es, MonadExts es m, MonadIO m) => m Manager
